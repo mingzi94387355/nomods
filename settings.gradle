@@ -1,0 +1,23 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+    }
+}
+
+plugins {
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
+}
+
+rootProject.name = 'nomods-neoforge1.21.1'
+
+// Modules are managed by generate.py - re-run it instead of editing this list.
+include 'nomods1'
+include 'nomods2'
+include 'nomods3'
+include 'nomods4'
+include 'nomods5'
+include 'nomods6'
+include 'nomods7'
+include 'nomods8'
+include 'nomods9'
+include 'nomods10'

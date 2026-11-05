@@ -1,0 +1,38 @@
+// Root build file for the nomods family.
+//
+// Every "nomodsN" directory is an independent NeoForge 1.21.1 mod with its own
+// jar. Shared repositories/plugin versions live here; everything mod specific
+// lives in nomodsN/build.gradle.
+
+plugins {
+    id 'net.neoforged.moddev' version '2.0.144' apply false
+}
+
+allprojects {
+    repositories {
+        maven { url = 'https://neoforged.forgecdn.net/releases' }
+        maven { url = 'https://neoforged.forgecdn.net/mojang-meta' }
+        maven { url = 'https://libraries.minecraft.net/' }
+        mavenCentral()
+    }
+}
+
+// Helper for massbuild.py: dump the NeoForge compile classpath of one module so
+// thousands of tiny mods can be compiled with plain javac, without creating a
+// Gradle project (and a build/moddev tree) for every single mod.
+tasks.register('writeCompileClasspath') {
+    group = 'nomods'
+    description = 'Writes the compile classpath used by massbuild.py.'
+    // The NeoForge jars live in nomods1/build/moddev, so make sure they exist
+    // (massbuild.py deletes build directories when it is finished).
+    dependsOn ':nomods1:createMinecraftArtifacts'
+    // Resolve eagerly: the resulting String is configuration-cache friendly.
+    def classpath = project(':nomods1').sourceSets.main.compileClasspath.asPath
+    def outputFile = layout.buildDirectory.file('massbuild/compile-classpath.txt')
+    outputs.file(outputFile)
+    doLast {
+        def target = outputFile.get().asFile
+        target.parentFile.mkdirs()
+        target.text = classpath
+    }
+}
